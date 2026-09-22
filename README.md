@@ -1,58 +1,100 @@
-# Blade Account Card v2
+# Blade Account Card
 
-BAC v2 is file-based. Normal authentication requires an issued `.bac` file plus its file password.
+**Blade Account Card (BAC)** is a file-based cryptographic identity system built for Cloudflare Pages, Pages Functions, and D1.
 
-## Cloudflare deployment
-Repository root:
+BAC users authenticate with an issued `.bac` credential file and its password. The encrypted private key stays client-side; BAC stores the corresponding public key and credential state.
+
+> **Release:** 1.0.0  
+> **Status:** First public release / prototype
+
+## Features
+
+- `.bac` file credentials
+- ECDSA P-256 challenge-response authentication
+- AES-256-GCM encrypted private-key containers
+- PBKDF2-HMAC-SHA-256 password derivation
+- One-use, expiring login challenges
+- Credential expiration and revocation
+- Administrator/user roles
+- Account enable/disable controls
+- Secure server sessions
+- Audit trail
+- Automatic D1 initialization and compatible schema upgrades
+- Built-in health endpoint
+- Administrator database export
+- Strict CSP/security headers
+- Responsive web management UI
+
+## Repository layout
+
+```text
+/
+├── functions/               Cloudflare Pages Functions
+│   ├── _lib.js
+│   └── api/
+├── public/                  Static web application
+│   ├── assets/
+│   ├── _headers
+│   └── index.html
+├── BACKUP-AND-RECOVERY.md
+├── CHANGELOG.md
+├── LICENSE
+├── SECURITY.md
+├── package.json
+└── README.md
 ```
-functions/
-public/
-package.json
-README.md
+
+## Deploy to Cloudflare Pages
+
+Create a GitHub repository and place the contents of this package at the repository root.
+
+Configure Pages:
+
+```text
+Framework preset:       None
+Build command:          exit 0
+Build output directory: public
+Root directory:         (blank)
 ```
-Pages settings:
-- Framework: None
-- Build command: `exit 0`
-- Build output directory: `public`
-- Root directory: blank
 
-Create or reuse a D1 database. Bind it to the Pages project using the exact binding name `DB`, then redeploy.
+Create or select a Cloudflare D1 database. In the Pages project, add a D1 binding:
 
-Do **not** paste SQL into D1. BAC creates its tables automatically.
+```text
+Variable name: DB
+Database:      your BAC D1 database
+```
 
-Visit the project root URL, not `/public`.
+Redeploy after adding the binding. BAC creates its schema automatically; do not manually paste migration SQL.
 
-## First run
-1. Initialize BAC.
-2. Open People.
-3. Click **Issue .bac** for the initial administrator.
-4. Choose a strong file password.
-5. Your browser downloads the `.bac` file.
-6. Store the file securely.
-7. Sign out and test authentication using that file.
+Open the root Pages URL. `/api/health` can be used to verify the deployment.
 
-## Cryptography
-- Authentication key: ECDSA P-256
-- Private-key file encryption: AES-256-GCM
-- Password KDF: PBKDF2-HMAC-SHA-256, 310,000 iterations
-- Random salt: 128 bits
-- AES-GCM IV: 96 bits
-- Login challenge: 256 random bits, server generated, five-minute lifetime, one-use
-- Sessions: random opaque tokens; only SHA-256 token hashes are stored server-side
-- Private keys and BAC file passwords are not intentionally transmitted to BAC
+## First setup
 
-The file password is essential. A copied `.bac` file can be attacked offline, so weak passwords are unsafe. BAC v2 enforces only a 10-character minimum; use a substantially stronger passphrase.
+1. Initialize the organization and first administrator.
+2. Open **People**.
+3. Choose **Issue .bac** for the administrator.
+4. Set a strong credential-file passphrase.
+5. Securely store the downloaded `.bac` file.
+6. Open **Backup** and export the initial server database backup.
+7. Sign out and verify that the `.bac` file and password can authenticate.
 
-## Security scope
-This is a prototype/learning identity system, not an audited production IdP and not equivalent to a CAC/PIV smart card. A file credential is copyable by design. Future BAC credential providers should include WebAuthn/passkeys, TPM-backed keys, and PIV hardware.
+## Backups
 
-If the `.bac` file is lost, revoke the corresponding credential and issue another one. BAC deliberately has no server-side copy of its private key.
+Database backups and `.bac` credential backups are deliberately separate. Server backups never contain private credential keys. See `BACKUP-AND-RECOVERY.md`.
 
+## Security model
 
-## Automatic database upgrades
+BAC does not send the plaintext private key or BAC file password to the server. Authentication uses a short-lived random challenge that the browser signs after locally decrypting the selected credential.
 
-BAC v2.2 inspects the live D1 table schema using `PRAGMA table_info` and adds missing compatible columns with `ALTER TABLE ... ADD COLUMN`. This specifically upgrades databases created by older BAC versions without deleting users, credentials, audit records, or settings.
+File credentials are copyable and can be attacked offline if stolen. Use strong passphrases. For high-assurance deployments, hardware-backed WebAuthn/PIV/TPM credentials are preferable.
 
-The current schema version is written to `settings.schema_version`.
+See `SECURITY.md`.
 
-`/api/health` reports the detected credential columns and any missing required columns. Credential issuance also returns a diagnostic `detail` field if D1 rejects the operation.
+## API diagnostics
+
+- `GET /api/health`
+- `GET /api/version`
+
+## License
+
+See `LICENSE`.

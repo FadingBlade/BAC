@@ -1,0 +1,1 @@
+import{json}from"../_lib.js";export async function onRequestGet(){return json({name:"Blade Account Card",version:"1.0.0",api:1,credential_file:2})}

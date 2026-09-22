@@ -1,22 +1,41 @@
-Blade Account Card v2.2 validation
-==================================
+Blade Account Card 1.0.0 Release Validation
+==========================================
 
-PASS  JS syntax: functions/_lib.js
-PASS  JS syntax: functions/api/audit.js
-PASS  JS syntax: functions/api/logout.js
-PASS  JS syntax: functions/api/people.js
-PASS  JS syntax: functions/api/health.js
-PASS  JS syntax: functions/api/status.js
-PASS  JS syntax: functions/api/verify.js
-PASS  JS syntax: functions/api/challenge.js
-PASS  JS syntax: functions/api/revoke.js
-PASS  JS syntax: functions/api/credentials.js
-PASS  JS syntax: functions/api/setup.js
-PASS  JS syntax: public/assets/app.js
-PASS  schema introspection
-PASS  automatic ALTER TABLE migration
-PASS  schema version persistence
-PASS  file_version compatibility
-PASS  no inline event handlers
+PASS  README.md
+PASS  SECURITY.md
+PASS  BACKUP-AND-RECOVERY.md
+PASS  CHANGELOG.md
+PASS  LICENSE
+PASS  .gitignore
+PASS  package.json
+PASS  public/index.html
+PASS  public/assets/style.css
+PASS  public/assets/app.js
+PASS  public/_headers
+PASS  functions/_lib.js
+PASS  functions/api/health.js
+PASS  functions/api/version.js
+PASS  functions/api/backup.js
+PASS  syntax functions/_lib.js
+PASS  syntax functions/api/audit.js
+PASS  syntax functions/api/backup.js
+PASS  syntax functions/api/logout.js
+PASS  syntax functions/api/people.js
+PASS  syntax functions/api/health.js
+PASS  syntax functions/api/status.js
+PASS  syntax functions/api/verify.js
+PASS  syntax functions/api/version.js
+PASS  syntax functions/api/challenge.js
+PASS  syntax functions/api/revoke.js
+PASS  syntax functions/api/credentials.js
+PASS  syntax functions/api/setup.js
+PASS  syntax public/assets/app.js
+PASS  strict-CSP HTML handlers
+PASS  CSP contains no unsafe-inline
+PASS  backup UI wiring
+PASS  encrypted BAC file implementation
+PASS  password KDF implementation
+PASS  internal schema migration marker
 
-Static/runtime syntax validation passed. Live Cloudflare D1 execution cannot be performed from this offline artifact environment.
+LIMITATION: Cloudflare Pages/D1 cannot be live-executed from this offline build environment.
+Static structure, JavaScript syntax, CSP compatibility, backup wiring, and credential crypto code were validated.

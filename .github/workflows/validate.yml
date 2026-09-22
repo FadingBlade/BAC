@@ -1,0 +1,23 @@
+name: Validate
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check JavaScript syntax
+        run: |
+          find functions public/assets -name '*.js' -print0 | xargs -0 -n1 node --check
+      - name: Reject inline HTML event handlers
+        run: |
+          if grep -Eio ' on(click|change|submit|input|load)=' public/index.html; then
+            echo "Inline event handler found; strict CSP would block it."
+            exit 1
+          fi
