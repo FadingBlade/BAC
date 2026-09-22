@@ -1,75 +1,49 @@
-# Blade Account Card (BAC) v1.1 (AE)
+# Blade Account Card v2
 
-A Cloudflare Pages + Pages Functions + D1 cryptographic identity lab.
+BAC v2 is file-based. Normal authentication requires an issued `.bac` file plus its file password.
 
-## The intentionally simple deployment
-
-BAC **does not require you to paste SQL into D1**. On first access, `/api/health` creates the schema automatically.
-
-### Repository layout matters
-
-Upload the **contents of this folder** to the root of your Git repository:
-
-```text
-/
-├── functions/
-├── public/
-├── package.json
-└── README.md
+## Cloudflare deployment
+Repository root:
 ```
-
-Do not put the entire project inside another folder.
-
-### Cloudflare Pages settings
-
-Create/import the Git repository as a **Pages** project.
-
-- Framework preset: None
-- Production branch: main
+functions/
+public/
+package.json
+README.md
+```
+Pages settings:
+- Framework: None
 - Build command: `exit 0`
 - Build output directory: `public`
-- Root directory: leave blank
+- Root directory: blank
 
-Cloudflare's current documentation recommends `exit 0` for static Pages projects that use Pages Functions.
+Create or reuse a D1 database. Bind it to the Pages project using the exact binding name `DB`, then redeploy.
 
-### D1
+Do **not** paste SQL into D1. BAC creates its tables automatically.
 
-1. Create a D1 database named `bac-db`.
-2. Open your **Pages project**.
-3. Add a D1 binding.
-4. Variable name must be exactly: `DB`
-5. Select `bac-db`.
-6. Redeploy the Pages project.
+Visit the project root URL, not `/public`.
 
-**Do not run a migration file. BAC creates the required tables itself.**
+## First run
+1. Initialize BAC.
+2. Open People.
+3. Click **Issue .bac** for the initial administrator.
+4. Choose a strong file password.
+5. Your browser downloads the `.bac` file.
+6. Store the file securely.
+7. Sign out and test authentication using that file.
 
-Open:
+## Cryptography
+- Authentication key: ECDSA P-256
+- Private-key file encryption: AES-256-GCM
+- Password KDF: PBKDF2-HMAC-SHA-256, 310,000 iterations
+- Random salt: 128 bits
+- AES-GCM IV: 96 bits
+- Login challenge: 256 random bits, server generated, five-minute lifetime, one-use
+- Sessions: random opaque tokens; only SHA-256 token hashes are stored server-side
+- Private keys and BAC file passwords are not intentionally transmitted to BAC
 
-```text
-https://YOUR-PROJECT.pages.dev/
-```
-
-Do not add `/public`.
-
-If everything is configured correctly, the top-right status says **SYSTEM ONLINE** and you get the initialization wizard.
-
-## First administrator
-
-Initialize BAC, then immediately go to **People → Issue** beside your administrator account. That creates the administrator's first BAC credential in your browser.
-
-Then go to **Credentials → Backup key** and protect the backup file.
+The file password is essential. A copied `.bac` file can be attacked offline, so weak passwords are unsafe. BAC v2 enforces only a 10-character minimum; use a substantially stronger passphrase.
 
 ## Security scope
+This is a prototype/learning identity system, not an audited production IdP and not equivalent to a CAC/PIV smart card. A file credential is copyable by design. Future BAC credential providers should include WebAuthn/passkeys, TPM-backed keys, and PIV hardware.
 
-BAC v1.1 is a learning/prototyping identity system. Software keys are exportable and stored in browser localStorage. It is not a replacement for PIV/CAC, TPM-backed keys, passkeys, or an audited production IdP.
-
-Authentication itself is real asymmetric challenge-response:
-1. server creates a cryptographically random one-use challenge;
-2. browser signs it with ECDSA P-256;
-3. Pages Function verifies it against the registered public key;
-4. server checks account/credential status and expiration;
-5. server issues an HttpOnly, Secure, SameSite session cookie.
-
-## Expansion path
-
-The next major credential provider should be WebAuthn/passkeys. The current person/credential/session/audit separation is deliberately structured so hardware-backed providers can be added without replacing the rest of BAC.
+If the `.bac` file is lost, revoke the corresponding credential and issue another one. BAC deliberately has no server-side copy of its private key.
