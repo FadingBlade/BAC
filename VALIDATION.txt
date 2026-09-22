@@ -1,8 +1,6 @@
-Blade Account Card v2.1 validation
+Blade Account Card v2.2 validation
 ==================================
 
-PASS  No inline HTML event handlers
-PASS  CSP remains strict (no unsafe-inline)
 PASS  JS syntax: functions/_lib.js
 PASS  JS syntax: functions/api/audit.js
 PASS  JS syntax: functions/api/logout.js
@@ -15,7 +13,10 @@ PASS  JS syntax: functions/api/revoke.js
 PASS  JS syntax: functions/api/credentials.js
 PASS  JS syntax: functions/api/setup.js
 PASS  JS syntax: public/assets/app.js
-PASS  No dynamically generated inline handlers
+PASS  schema introspection
+PASS  automatic ALTER TABLE migration
+PASS  schema version persistence
+PASS  file_version compatibility
+PASS  no inline event handlers
 
-The reported CSP failure is addressed by event listeners/event delegation rather than weakening script-src.
-Browser Permissions-Policy warnings for unsupported ad/privacy features are not emitted by BAC's own _headers file.
+Static/runtime syntax validation passed. Live Cloudflare D1 execution cannot be performed from this offline artifact environment.

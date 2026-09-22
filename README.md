@@ -47,3 +47,12 @@ The file password is essential. A copied `.bac` file can be attacked offline, so
 This is a prototype/learning identity system, not an audited production IdP and not equivalent to a CAC/PIV smart card. A file credential is copyable by design. Future BAC credential providers should include WebAuthn/passkeys, TPM-backed keys, and PIV hardware.
 
 If the `.bac` file is lost, revoke the corresponding credential and issue another one. BAC deliberately has no server-side copy of its private key.
+
+
+## Automatic database upgrades
+
+BAC v2.2 inspects the live D1 table schema using `PRAGMA table_info` and adds missing compatible columns with `ALTER TABLE ... ADD COLUMN`. This specifically upgrades databases created by older BAC versions without deleting users, credentials, audit records, or settings.
+
+The current schema version is written to `settings.schema_version`.
+
+`/api/health` reports the detected credential columns and any missing required columns. Credential issuance also returns a diagnostic `detail` field if D1 rejects the operation.
