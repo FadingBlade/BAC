@@ -1,0 +1,29 @@
+BAC v1.1 validation report
+==========================
+
+PASS  public/index.html
+PASS  public/assets/style.css
+PASS  public/assets/app.js
+PASS  functions/api/status.js
+PASS  functions/api/health.js
+PASS  functions/api/setup.js
+PASS  functions/_lib.js
+PASS  function imports
+PASS  CSS exists
+PASS  JS exists
+
+PASS  JS syntax: functions/_lib.js 
+PASS  JS syntax: functions/api/audit.js 
+PASS  JS syntax: functions/api/logout.js 
+PASS  JS syntax: functions/api/people.js 
+PASS  JS syntax: functions/api/health.js 
+PASS  JS syntax: functions/api/status.js 
+PASS  JS syntax: functions/api/login-verify.js 
+PASS  JS syntax: functions/api/login-challenge.js 
+PASS  JS syntax: functions/api/revoke.js 
+PASS  JS syntax: functions/api/credentials.js 
+PASS  JS syntax: functions/api/setup.js 
+PASS  JS syntax: public/assets/app.js 
+
+Runtime limitation: Cloudflare D1/Pages itself cannot be executed from this offline artifact environment.
+The package was statically validated; deployment behavior still depends on the Pages project having a D1 binding named DB.

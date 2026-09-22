@@ -1,75 +1,75 @@
-# Blade Account Card (BAC)
+# Blade Account Card (BAC) v1.1
 
-BAC is a small, expandable identity and cryptographic credential lab designed for Cloudflare Pages + Pages Functions + D1.
+A Cloudflare Pages + Pages Functions + D1 cryptographic identity lab.
 
-## What this release does
-- First-run GUI initialization
-- People and roles
-- Browser-generated ECDSA P-256 credentials
-- Challenge-response login
-- Server-side credential/status verification
-- Credential expiration and revocation
-- HttpOnly/Secure sessions
-- Audit trail
-- D1 storage
-- No dedicated server
+## The intentionally simple deployment
 
-## Security model
-The software credential private key is generated in the browser and stored in that browser profile's localStorage in v1.0. It is never uploaded to BAC. This is useful for learning and prototyping, but localStorage is **not equivalent to a TPM, PIV smart card, or non-exportable WebAuthn credential**. Do not use v1.0 as a production identity provider.
+BAC **does not require you to paste SQL into D1**. On first access, `/api/health` creates the schema automatically.
 
-## Cloudflare setup
-1. Put this project in a GitHub repository.
-2. In Cloudflare, create a D1 database named `bac-db`.
-3. Run `migrations/0001_initial.sql` against that database using the D1 console or Wrangler.
-4. Create a Cloudflare Pages project connected to the repository.
-5. Build command: leave blank.
-6. Build output directory: `public`
-7. In the Pages project, add a D1 binding:
-   - Variable name: `DB`
-   - Database: `bac-db`
-8. Redeploy the Pages project.
-9. Open the deployed URL. The BAC initialization screen creates the first administrator.
+### Repository layout matters
 
-The `/functions` directory must stay at the repository root. Do not put it inside `public`.
+Upload the **contents of this folder** to the root of your Git repository:
 
-## Local development
-Install Node.js, then:
-
-```bash
-npm install
-npx wrangler d1 create bac-db
+```text
+/
+├── functions/
+├── public/
+├── package.json
+└── README.md
 ```
 
-Copy `wrangler.example.jsonc` to `wrangler.jsonc` and put the returned database ID in it.
+Do not put the entire project inside another folder.
 
-Initialize the local database:
+### Cloudflare Pages settings
 
-```bash
-npm run db:local
+Create/import the Git repository as a **Pages** project.
+
+- Framework preset: None
+- Production branch: main
+- Build command: `exit 0`
+- Build output directory: `public`
+- Root directory: leave blank
+
+Cloudflare's current documentation recommends `exit 0` for static Pages projects that use Pages Functions.
+
+### D1
+
+1. Create a D1 database named `bac-db`.
+2. Open your **Pages project**.
+3. Add a D1 binding.
+4. Variable name must be exactly: `DB`
+5. Select `bac-db`.
+6. Redeploy the Pages project.
+
+**Do not run a migration file. BAC creates the required tables itself.**
+
+Open:
+
+```text
+https://YOUR-PROJECT.pages.dev/
 ```
 
-Run BAC:
+Do not add `/public`.
 
-```bash
-npm run dev
-```
+If everything is configured correctly, the top-right status says **SYSTEM ONLINE** and you get the initialization wizard.
 
-## Important first-login behavior
-The administrator created during initialization has no credential yet, but receives an 8-hour setup session. Immediately click **Issue credential** beside the administrator. The private key is then stored in that browser. After signing out, that credential is what lets the administrator sign back in.
+## First administrator
 
-If browser storage is cleared before backup/export functionality is added, that credential's private key is lost. For v1.0, create/recover an administrator by database administration if this happens.
+Initialize BAC, then immediately go to **People → Issue** beside your administrator account. That creates the administrator's first BAC credential in your browser.
 
-## Expansion points
-The database already separates people, credentials, applications, challenges, sessions, settings and audit events. Future providers can add WebAuthn/passkeys, TPM-backed keys, PIV cards and hardware tokens without changing the basic person/credential model.
+Then go to **Credentials → Backup key** and protect the backup file.
 
-Recommended next milestones:
-1. WebAuthn/passkey provider
-2. encrypted credential backup/export
-3. user disable/enable GUI
-4. application registration + OAuth/OIDC
-5. recovery codes / second administrator approval
-6. CSRF protections for administrative state changes
-7. session management and forced logout
-8. rate limiting / abuse controls
-9. security headers and CSP
-10. formal schema migrations/versioning
+## Security scope
+
+BAC v1.1 is a learning/prototyping identity system. Software keys are exportable and stored in browser localStorage. It is not a replacement for PIV/CAC, TPM-backed keys, passkeys, or an audited production IdP.
+
+Authentication itself is real asymmetric challenge-response:
+1. server creates a cryptographically random one-use challenge;
+2. browser signs it with ECDSA P-256;
+3. Pages Function verifies it against the registered public key;
+4. server checks account/credential status and expiration;
+5. server issues an HttpOnly, Secure, SameSite session cookie.
+
+## Expansion path
+
+The next major credential provider should be WebAuthn/passkeys. The current person/credential/session/audit separation is deliberately structured so hardware-backed providers can be added without replacing the rest of BAC.

@@ -1,16 +1,4 @@
-import {json,body,fromB64u,now,makeSession,sessionCookie,audit} from "../_lib.js";
-export async function onRequestPost(context){
-  const x=await body(context.request);
-  const row=await context.env.DB.prepare(`SELECT ch.*,c.public_key_jwk,c.status credential_status,p.status person_status
-    FROM challenges ch JOIN credentials c ON c.id=ch.credential_id JOIN people p ON p.id=ch.person_id WHERE ch.id=?`).bind(x.challenge_id||"").first();
-  if(!row||row.used||row.expires_at<=now()||row.credential_status!=="active"||row.person_status!=="active") return json({error:"Challenge invalid or expired"},403);
-  try{
-    const key=await crypto.subtle.importKey("jwk",JSON.parse(row.public_key_jwk),{name:"ECDSA",namedCurve:"P-256"},false,["verify"]);
-    const ok=await crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},key,fromB64u(x.signature||""),new TextEncoder().encode(row.challenge));
-    if(!ok) return json({error:"Signature rejected"},403);
-  }catch{return json({error:"Credential verification failed"},403)}
-  await context.env.DB.prepare("UPDATE challenges SET used=1 WHERE id=?").bind(row.id).run();
-  const s=await makeSession(context.env.DB,row.person_id);
-  await audit(context.env.DB,row.person_id,"auth.login",row.credential_id);
-  return json({ok:true},200,{"set-cookie":sessionCookie(s.raw)});
-}
+import{json,body,unb64u,now,newSession,cookie,log}from"../_lib.js";
+export async function onRequestPost(c){const x=await body(c.request);const r=await c.env.DB.prepare(`SELECT ch.*,cr.public_key_jwk,cr.status credential_status,cr.expires_at,p.status person_status FROM challenges ch JOIN credentials cr ON cr.id=ch.credential_id JOIN people p ON p.id=ch.person_id WHERE ch.id=?`).bind(x.challenge_id||"").first();if(!r||r.used||r.expires_at<=now()||r.credential_status!=="active"||(r.expires_at&&r.expires_at<=now())||r.person_status!=="active")return json({error:"Challenge or credential invalid"},403);
+ try{const k=await crypto.subtle.importKey("jwk",JSON.parse(r.public_key_jwk),{name:"ECDSA",namedCurve:"P-256"},false,["verify"]);const ok=await crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},k,unb64u(x.signature||""),new TextEncoder().encode(r.challenge));if(!ok)return json({error:"Signature rejected"},403)}catch{return json({error:"Credential verification failed"},403)}
+ await c.env.DB.prepare("UPDATE challenges SET used=1 WHERE id=?").bind(r.id).run();const s=await newSession(c.env.DB,r.person_id);await log(c.env.DB,r.person_id,"auth.login",r.credential_id);return json({ok:true},200,{"set-cookie":cookie(s)})}

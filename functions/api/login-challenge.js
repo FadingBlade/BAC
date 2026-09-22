@@ -1,12 +1,2 @@
-import {json,body,id,b64u,now} from "../_lib.js";
-export async function onRequestPost(context){
-  const x=await body(context.request), username=String(x.username||"").trim().toLowerCase();
-  const p=await context.env.DB.prepare("SELECT id,display_name FROM people WHERE username=? AND status='active'").bind(username).first();
-  if(!p) return json({error:"Account or credential not found"},404);
-  const c=await context.env.DB.prepare("SELECT id,label,public_key_jwk FROM credentials WHERE person_id=? AND status='active' AND (expires_at IS NULL OR expires_at>?) ORDER BY created_at DESC LIMIT 1").bind(p.id,now()).first();
-  if(!c) return json({error:"No active credential"},403);
-  const bytes=new Uint8Array(32); crypto.getRandomValues(bytes); const challenge=b64u(bytes), cid=id("chal");
-  const exp=new Date(Date.now()+5*60*1000).toISOString();
-  await context.env.DB.prepare("INSERT INTO challenges(id,purpose,person_id,credential_id,challenge,expires_at,used) VALUES(?,?,?,?,?,?,0)").bind(cid,"login",p.id,c.id,challenge,exp).run();
-  return json({challenge_id:cid,challenge,credential_id:c.id,label:c.label});
-}
+import{json,body,rid,b64u,now}from"../_lib.js";
+export async function onRequestPost(c){const x=await body(c.request),u=String(x.username||"").trim().toLowerCase();const p=await c.env.DB.prepare("SELECT id FROM people WHERE username=? AND status='active'").bind(u).first();if(!p)return json({error:"Account or credential not found"},404);const cr=await c.env.DB.prepare("SELECT id,label,public_key_jwk FROM credentials WHERE person_id=? AND status='active' AND (expires_at IS NULL OR expires_at>?) ORDER BY created_at DESC LIMIT 1").bind(p.id,now()).first();if(!cr)return json({error:"No active BAC credential"},403);const b=new Uint8Array(32);crypto.getRandomValues(b);const challenge=b64u(b),id=rid("chal"),exp=new Date(Date.now()+300000).toISOString();await c.env.DB.prepare("INSERT INTO challenges VALUES(?,?,?,?,?,?,0)").bind(id,"login",p.id,cr.id,challenge,exp).run();return json({challenge_id:id,challenge,credential_id:cr.id,label:cr.label})}
