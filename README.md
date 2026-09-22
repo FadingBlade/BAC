@@ -1,4 +1,4 @@
-# Blade Account Card (BAC) v1.1
+# Blade Account Card (BAC) v1.1 (AE)
 
 A Cloudflare Pages + Pages Functions + D1 cryptographic identity lab.
 
