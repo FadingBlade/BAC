@@ -1,0 +1,14 @@
+{
+  "name": "blade-account-card",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Blade Account Card (BAC) - Cloudflare Pages identity and cryptographic credential lab",
+  "scripts": {
+    "dev": "wrangler pages dev public --d1 DB=bac-db",
+    "db:local": "wrangler d1 execute bac-db --local --file=./migrations/0001_initial.sql",
+    "db:remote": "wrangler d1 execute bac-db --remote --file=./migrations/0001_initial.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

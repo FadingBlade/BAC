@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blade Account Card</title><link rel="stylesheet" href="/assets/style.css"></head>
+<body><div class="wrap">
+<nav><div class="brand">BLADE ACCOUNT CARD</div><div class="muted">BAC · v1.0</div></nav>
+<div id="message" class="notice error hidden"></div>
+
+<section id="setup" class="hidden">
+ <div class="hero"><h1>Initialize BAC.</h1><p>Create the first administrator. BAC uses Cloudflare Pages Functions and D1; routine administration happens here after setup.</p></div>
+ <div class="card"><label>Organization</label><input id="org" value="Blade"><label>Administrator display name</label><input id="sname" placeholder="Dillin"><label>Administrator username</label><input id="suser" placeholder="dillin"><button class="primary" onclick="setup()">Initialize Blade Account Card</button></div>
+</section>
+
+<section id="login" class="hidden">
+ <div class="hero"><h1>Present BAC.</h1><p>Enter your BAC username. Your browser signs a fresh challenge with the locally stored credential.</p></div>
+ <div class="card"><label>Username</label><input id="luser" autocomplete="username"><button class="primary" onclick="login()">Authenticate</button><p class="muted">The private key is never sent to the BAC server.</p></div>
+</section>
+
+<section id="app" class="hidden">
+ <div class="row between"><div><h1>Control Center</h1><div id="who" class="muted"></div></div><button onclick="logout()">Sign out</button></div>
+ <div id="admin">
+  <div class="grid"><div class="card"><div class="muted">People</div><div class="stat" id="npeople">—</div></div><div class="card"><div class="muted">Active credentials</div><div class="stat" id="ncred">—</div></div><div class="card"><div class="muted">Recent audit events</div><div class="stat" id="nevents">—</div></div></div>
+  <div class="card"><h2>Add person</h2><div class="grid"><div><label>Display name</label><input id="pname"></div><div><label>Username</label><input id="puser"></div><div><label>Role</label><select id="prole"><option value="user">User</option><option value="admin">Administrator</option></select></div></div><button class="primary" onclick="addPerson()">Create person</button></div>
+  <div class="card"><h2>People</h2><table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody id="people"></tbody></table></div>
+  <div class="card"><h2>Credentials</h2><table><thead><tr><th>ID</th><th>Owner</th><th>Type</th><th>Status</th><th>Expires</th><th></th></tr></thead><tbody id="creds"></tbody></table></div>
+  <div class="card"><h2>Audit</h2><table><thead><tr><th>Time</th><th>Action</th><th>Target</th></tr></thead><tbody id="audit"></tbody></table></div>
+ </div>
+</section>
+</div><script src="/assets/app.js"></script></body></html>
