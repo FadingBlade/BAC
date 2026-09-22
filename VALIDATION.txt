@@ -1,38 +1,21 @@
-Blade Account Card v2.0 validation
+Blade Account Card v2.1 validation
 ==================================
 
-PASS  public/index.html
-PASS  public/assets/style.css
-PASS  public/assets/app.js
-PASS  public/_headers
-PASS  functions/_lib.js
-PASS  functions/api/health.js
-PASS  functions/api/status.js
-PASS  functions/api/setup.js
-PASS  functions/api/people.js
-PASS  functions/api/credentials.js
-PASS  functions/api/challenge.js
-PASS  functions/api/verify.js
-PASS  functions/api/logout.js
-PASS  functions/api/revoke.js
-PASS  functions/api/audit.js
-PASS  package.json
-PASS  README.md
-PASS  syntax functions/_lib.js
-PASS  syntax functions/api/audit.js
-PASS  syntax functions/api/logout.js
-PASS  syntax functions/api/people.js
-PASS  syntax functions/api/health.js
-PASS  syntax functions/api/status.js
-PASS  syntax functions/api/verify.js
-PASS  syntax functions/api/challenge.js
-PASS  syntax functions/api/revoke.js
-PASS  syntax functions/api/credentials.js
-PASS  syntax functions/api/setup.js
-PASS  syntax public/assets/app.js
-PASS  CSP-compatible external JS
-PASS  CSS path
-PASS  JS path
+PASS  No inline HTML event handlers
+PASS  CSP remains strict (no unsafe-inline)
+PASS  JS syntax: functions/_lib.js
+PASS  JS syntax: functions/api/audit.js
+PASS  JS syntax: functions/api/logout.js
+PASS  JS syntax: functions/api/people.js
+PASS  JS syntax: functions/api/health.js
+PASS  JS syntax: functions/api/status.js
+PASS  JS syntax: functions/api/verify.js
+PASS  JS syntax: functions/api/challenge.js
+PASS  JS syntax: functions/api/revoke.js
+PASS  JS syntax: functions/api/credentials.js
+PASS  JS syntax: functions/api/setup.js
+PASS  JS syntax: public/assets/app.js
+PASS  No dynamically generated inline handlers
 
-Runtime note: live Cloudflare Pages/D1 cannot be executed from this offline build environment.
-Deployment still requires a Pages project with a D1 binding named exactly DB.
+The reported CSP failure is addressed by event listeners/event delegation rather than weakening script-src.
+Browser Permissions-Policy warnings for unsupported ad/privacy features are not emitted by BAC's own _headers file.

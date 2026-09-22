@@ -20,6 +20,24 @@ async function issue(id){const p=PEOPLE.find(x=>x.id===id);if(!p)return;const pa
 async function revoke(id){const reason=prompt("Revocation reason:","Replaced");if(reason===null)return;await api("/api/revoke",{method:"POST",body:JSON.stringify({id,reason})});await refresh();note("Credential revoked.",true)}
 async function updatePerson(id,role,status){try{await api("/api/people",{method:"PATCH",body:JSON.stringify({id,role,status})});await refresh()}catch(e){note(e.message)}}
 let PEOPLE=[];
-async function refresh(){const[p,c,a]=await Promise.all([api("/api/people"),api("/api/credentials"),api("/api/audit")]);PEOPLE=p.people;$("#npeople").textContent=p.people.length;$("#ncred").textContent=c.credentials.filter(x=>x.status==="active").length;$("#nevents").textContent=a.events.length;$("#people").innerHTML=p.people.map(x=>`<tr><td>${esc(x.display_name)}<br><span class="small muted">${esc(x.id)}</span></td><td>${esc(x.username)}</td><td>${esc(x.role)}</td><td><span class="badge ${x.status==="active"?"ok":"bad"}">${x.status}</span></td><td><button onclick="issue('${x.id}')">Issue .bac</button> <button onclick="updatePerson('${x.id}','${x.role==="admin"?"user":"admin"}','${x.status}')">${x.role==="admin"?"Make user":"Make admin"}</button> <button onclick="updatePerson('${x.id}','${x.role}','${x.status==="active"?"disabled":"active"}')">${x.status==="active"?"Disable":"Enable"}</button></td></tr>`).join("");$("#creds").innerHTML=c.credentials.map(x=>`<tr><td><code>${esc(x.id)}</code></td><td>${esc(x.display_name)}</td><td>${esc(x.label)}</td><td><span class="badge ${x.status==="active"?"ok":"bad"}">${x.status}</span></td><td>${new Date(x.expires_at).toLocaleDateString()}</td><td>${x.status==="active"?`<button class="danger" onclick="revoke('${x.id}')">Revoke</button>`:""}</td></tr>`).join("");$("#audit").innerHTML=a.events.map(x=>`<tr><td>${new Date(x.created_at).toLocaleString()}</td><td>${esc(x.action)}</td><td><code>${esc(x.target||"")}</code></td></tr>`).join("")}
+async function refresh(){const[p,c,a]=await Promise.all([api("/api/people"),api("/api/credentials"),api("/api/audit")]);PEOPLE=p.people;$("#npeople").textContent=p.people.length;$("#ncred").textContent=c.credentials.filter(x=>x.status==="active").length;$("#nevents").textContent=a.events.length;$("#people").innerHTML=p.people.map(x=>`<tr><td>${esc(x.display_name)}<br><span class="small muted">${esc(x.id)}</span></td><td>${esc(x.username)}</td><td>${esc(x.role)}</td><td><span class="badge ${x.status==="active"?"ok":"bad"}">${x.status}</span></td><td><button data-action="issue" data-id="${x.id}">Issue .bac</button> <button data-action="role" data-id="${x.id}" data-role="${x.role==="admin"?"user":"admin"}" data-status="${x.status}">${x.role==="admin"?"Make user":"Make admin"}</button> <button data-action="status" data-id="${x.id}" data-role="${x.role}" data-status="${x.status==="active"?"disabled":"active"}">${x.status==="active"?"Disable":"Enable"}</button></td></tr>`).join("");$("#creds").innerHTML=c.credentials.map(x=>`<tr><td><code>${esc(x.id)}</code></td><td>${esc(x.display_name)}</td><td>${esc(x.label)}</td><td><span class="badge ${x.status==="active"?"ok":"bad"}">${x.status}</span></td><td>${new Date(x.expires_at).toLocaleDateString()}</td><td>${x.status==="active"?`<button class="danger" data-action="revoke" data-id="${x.id}">Revoke</button>`:""}</td></tr>`).join("");$("#audit").innerHTML=a.events.map(x=>`<tr><td>${new Date(x.created_at).toLocaleString()}</td><td>${esc(x.action)}</td><td><code>${esc(x.target||"")}</code></td></tr>`).join("")}
 function tab(id,b){$$(".section").forEach(x=>x.classList.remove("active"));$("#sec-"+id).classList.add("active");$$(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active")}
-Object.assign(window,{chooseLogin,login,setup,logout,addPerson,issue,revoke,updatePerson,tab});boot();
+
+function bindUI(){
+ $("#setupBtn")?.addEventListener("click",setup);
+ $("#bacfile")?.addEventListener("change",chooseLogin);
+ $("#loginBtn")?.addEventListener("click",login);
+ $("#logoutBtn")?.addEventListener("click",logout);
+ $("#addPersonBtn")?.addEventListener("click",addPerson);
+ $$(".tabs [data-tab]").forEach(b=>b.addEventListener("click",()=>tab(b.dataset.tab,b)));
+ document.addEventListener("click",async e=>{
+   const b=e.target.closest("button[data-action]"); if(!b)return;
+   const {action,id,role,status}=b.dataset;
+   if(action==="issue") await issue(id);
+   else if(action==="revoke") await revoke(id);
+   else if(action==="role"||action==="status") await updatePerson(id,role,status);
+ });
+}
+bindUI();
+boot();
+

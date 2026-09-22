@@ -1,1 +1,1 @@
-{"name":"blade-account-card","version":"2.0.0","private":true,"devDependencies":{"wrangler":"^4.0.0"},"scripts":{"dev":"wrangler pages dev public --d1 DB"}}
+{"name":"blade-account-card","version":"2.1.0","private":true,"devDependencies":{"wrangler":"^4.0.0"},"scripts":{"dev":"wrangler pages dev public --d1 DB"}}
