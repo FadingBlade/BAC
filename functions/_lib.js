@@ -18,6 +18,9 @@ export async function schema(DB){
 `CREATE TABLE IF NOT EXISTS sessions(id_hash TEXT PRIMARY KEY,person_id TEXT NOT NULL,expires_at TEXT NOT NULL,created_at TEXT NOT NULL)`,
 `CREATE TABLE IF NOT EXISTS challenges(id TEXT PRIMARY KEY,person_id TEXT NOT NULL,credential_id TEXT NOT NULL,challenge TEXT NOT NULL,expires_at TEXT NOT NULL,used INTEGER NOT NULL DEFAULT 0)`,
 `CREATE TABLE IF NOT EXISTS audit(id INTEGER PRIMARY KEY AUTOINCREMENT,actor_id TEXT,action TEXT NOT NULL,target TEXT,detail TEXT,created_at TEXT NOT NULL)`,
+`CREATE TABLE IF NOT EXISTS applications(id TEXT PRIMARY KEY,name TEXT NOT NULL,client_id TEXT NOT NULL UNIQUE,client_secret_hash TEXT,redirect_uris TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'active',created_at TEXT NOT NULL)`,
+`CREATE TABLE IF NOT EXISTS auth_codes(code_hash TEXT PRIMARY KEY,client_id TEXT NOT NULL,person_id TEXT NOT NULL,redirect_uri TEXT NOT NULL,scope TEXT NOT NULL,nonce TEXT,code_challenge TEXT NOT NULL,expires_at TEXT NOT NULL,used INTEGER NOT NULL DEFAULT 0)`,
+`CREATE TABLE IF NOT EXISTS access_tokens(token_hash TEXT PRIMARY KEY,client_id TEXT NOT NULL,person_id TEXT NOT NULL,scope TEXT NOT NULL,expires_at TEXT NOT NULL,created_at TEXT NOT NULL)`,
 `CREATE INDEX IF NOT EXISTS idx_cred_person ON credentials(person_id)`,
 `CREATE INDEX IF NOT EXISTS idx_audit_time ON audit(created_at)`
  ])await DB.prepare(q).run();
@@ -27,8 +30,8 @@ export async function schema(DB){
  await addColumn(DB,"credentials","revoke_reason","TEXT");
  await addColumn(DB,"credentials","revoked_at","TEXT");
  await addColumn(DB,"credentials","expires_at","TEXT");
- await DB.prepare("INSERT OR REPLACE INTO settings(key,value) VALUES('schema_version','2.2.0')").run();
- return {version:"2.2.0"};
+ await DB.prepare("INSERT OR REPLACE INTO settings(key,value) VALUES('schema_version','2.3.0')").run();
+ return {version:"2.3.0"};
 }
 export async function setting(DB,k){return (await DB.prepare("SELECT value FROM settings WHERE key=?").bind(k).first())?.value??null}
 export async function log(DB,a,act,t=null,d=null){await DB.prepare("INSERT INTO audit(actor_id,action,target,detail,created_at) VALUES(?,?,?,?,?)").bind(a,act,t,d?JSON.stringify(d):null,now()).run()}

@@ -1,41 +1,35 @@
-Blade Account Card 1.0.0 Release Validation
-==========================================
+BAC v1.1.0 Integration Release Validation
+========================================
 
-PASS  README.md
-PASS  SECURITY.md
-PASS  BACKUP-AND-RECOVERY.md
-PASS  CHANGELOG.md
-PASS  LICENSE
-PASS  .gitignore
-PASS  package.json
-PASS  public/index.html
-PASS  public/assets/style.css
-PASS  public/assets/app.js
-PASS  public/_headers
 PASS  functions/_lib.js
+PASS  functions/token.js
+PASS  functions/userinfo.js
+PASS  functions/authorize.js
+PASS  functions/.well-known/openid-configuration.js
+PASS  functions/api/status.js
 PASS  functions/api/health.js
+PASS  functions/api/logout.js
 PASS  functions/api/version.js
+PASS  functions/api/setup.js
+PASS  functions/api/people.js
+PASS  functions/api/applications.js
+PASS  functions/api/credentials.js
+PASS  functions/api/challenge.js
 PASS  functions/api/backup.js
-PASS  syntax functions/_lib.js
-PASS  syntax functions/api/audit.js
-PASS  syntax functions/api/backup.js
-PASS  syntax functions/api/logout.js
-PASS  syntax functions/api/people.js
-PASS  syntax functions/api/health.js
-PASS  syntax functions/api/status.js
-PASS  syntax functions/api/verify.js
-PASS  syntax functions/api/version.js
-PASS  syntax functions/api/challenge.js
-PASS  syntax functions/api/revoke.js
-PASS  syntax functions/api/credentials.js
-PASS  syntax functions/api/setup.js
-PASS  syntax public/assets/app.js
-PASS  strict-CSP HTML handlers
-PASS  CSP contains no unsafe-inline
-PASS  backup UI wiring
-PASS  encrypted BAC file implementation
-PASS  password KDF implementation
-PASS  internal schema migration marker
+PASS  functions/api/verify.js
+PASS  functions/api/revoke.js
+PASS  functions/api/audit.js
+PASS  functions/api/oidc/complete.js
+PASS  public/assets/app.js
+PASS  No inline handlers
+PASS  Strict CSP
+PASS  Authorization endpoint
+PASS  Token endpoint
+PASS  UserInfo endpoint
+PASS  Discovery endpoint
+PASS  PKCE S256 enforcement
+PASS  One-use authorization codes
 
-LIMITATION: Cloudflare Pages/D1 cannot be live-executed from this offline build environment.
-Static structure, JavaScript syntax, CSP compatibility, backup wiring, and credential crypto code were validated.
+Security note: v1.1 intentionally does not issue ID tokens or advertise a JWKS URI.
+It is an OAuth Authorization Code + PKCE SSO integration preview, not a claim of full OIDC conformance.
+Live Cloudflare Pages/D1 execution cannot be performed from this offline build environment.

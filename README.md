@@ -4,7 +4,7 @@
 
 BAC users authenticate with an issued `.bac` credential file and its password. The encrypted private key stays client-side; BAC stores the corresponding public key and credential state.
 
-> **Release:** 1.0.0  
+> **Release:** 1.1.0  
 > **Status:** First public release / prototype
 
 ## Features
@@ -98,3 +98,19 @@ See `SECURITY.md`.
 ## License
 
 See `LICENSE`.
+
+
+## Sign in with BAC (v1.1)
+
+Register a site under **Applications** and use Authorization Code + PKCE (S256).
+
+Endpoints:
+
+```text
+/.well-known/openid-configuration
+/authorize
+/token
+/userinfo
+```
+
+This release intentionally uses opaque access tokens and the UserInfo endpoint. It does **not** claim full OpenID Connect conformance yet because signed ID tokens and a JWKS endpoint are not implemented. Treat the integration as an OAuth 2.0/OIDC-shaped BAC SSO preview, not a certified OIDC provider.

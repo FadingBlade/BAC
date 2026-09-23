@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 — 2026-09-21
+## 1.1.0 — 2026-09-21
 First public release.
 
 - File-based `.bac` credentials
@@ -17,3 +17,8 @@ First public release.
 - Administrator JSON database export
 - Strict Content Security Policy
 - Responsive management interface
+
+- Applications registry and Sign in with BAC authorization flow
+- Authorization Code + PKCE (S256)
+- OIDC discovery metadata
+- Opaque access tokens and UserInfo endpoint
