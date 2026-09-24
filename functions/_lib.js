@@ -1,3 +1,9 @@
+
+export async function sha(value){
+ const bytes=new TextEncoder().encode(String(value));
+ const digest=await crypto.subtle.digest("SHA-256",bytes);
+ return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,"0")).join("");
+}
 const te=new TextEncoder();
 export const now=()=>new Date().toISOString();
 export function json(x,status=200,h={}){return new Response(JSON.stringify(x),{status,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store",...h}})}

@@ -4,7 +4,7 @@
 
 BAC users authenticate with an issued `.bac` credential file and its password. The encrypted private key stays client-side; BAC stores the corresponding public key and credential state.
 
-> **Release:** 1.2.0  
+> **Release:** 1.2.1  
 > **Status:** First public release / prototype
 
 ## Features

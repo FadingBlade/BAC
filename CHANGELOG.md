@@ -1,6 +1,6 @@
-# Changelog
+A# Changelog
 
-## 1.2.0 — 2026-09-21
+## 1.2.1 — 2026-09-21
 First public release.
 
 - File-based `.bac` credentials
@@ -23,7 +23,7 @@ First public release.
 - OIDC discovery metadata
 - Opaque access tokens and UserInfo endpoint
 
-## 1.2.0
+## 1.2.1
 
 - Added simple BAC Ticket SSO for arbitrary server-backed websites
 - Added `/login?app=...` entry point
