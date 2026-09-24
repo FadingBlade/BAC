@@ -34,28 +34,8 @@ async function exportBackup(){
 }
 
 
-async function loadApps(){try{const x=await api("/api/applications");$("#appsBody").innerHTML=(x.applications||[]).map(a=>`<tr><td>${esc(a.name)}</td><td><code>${esc(a.client_id)}</code></td><td>${esc((a.redirect_uris||[]).join(", "))}</td><td><span class="badge">${esc(a.status)}</span></td></tr>`).join("")||`<tr><td colspan="4" class="muted">No applications yet.</td></tr>`}catch(e){}}
-async function addApp(){try{const x=await api("/api/applications",{method:"POST",body:JSON.stringify({name:$("#appName").value,redirect_uri:$("#appRedirect").value})});const b=$("#appSecretBox");b.classList.remove("hidden");b.innerHTML=`<strong>Application created.</strong><br>Client ID: <code>${esc(x.client_id)}</code><br>Client secret: <code>${esc(x.client_secret)}</code><br><span class="muted">Save this secret now. For the current PKCE public-client flow, the secret is not required.</span>`;await loadApps()}catch(e){note(e.message)}}
-async function finishOIDC(){const q=new URLSearchParams(location.search);if(q.get("oidc")!=="1")return;try{const x=await api("/api/oidc/complete",{method:"POST",body:JSON.stringify(Object.fromEntries(q.entries()))});const u=new URL(q.get("redirect_uri"));u.searchParams.set("code",x.code);if(x.state)u.searchParams.set("state",x.state);location.href=u.toString()}catch(e){note("BAC sign-in succeeded, but application authorization failed: "+e.message)}}
 
-function bindUI(){
- $("#setupBtn")?.addEventListener("click",setup);
- $("#bacfile")?.addEventListener("change",chooseLogin);
- $("#loginBtn")?.addEventListener("click",login);
- $("#logoutBtn")?.addEventListener("click",logout);
- $("#addPersonBtn")?.addEventListener("click",addPerson);
- $("#exportBackupBtn")?.addEventListener("click",exportBackup);
- $("#addAppBtn")?.addEventListener("click",addApp);
- $$(".tabs [data-tab]").forEach(b=>b.addEventListener("click",()=>{tab(b.dataset.tab,b);if(b.dataset.tab==="applications")loadApps()}));
- document.addEventListener("click",async e=>{
-   const b=e.target.closest("button[data-action]"); if(!b)return;
-   const {action,id,role,status}=b.dataset;
-   if(action==="issue") await issue(id);
-   else if(action==="revoke") await revoke(id);
-   else if(action==="role"||action==="status") await updatePerson(id,role,status);
- });
-}
 bindUI();
 boot();
-setTimeout(finishOIDC,250);
+setTimeout(finishBACSSO,350);
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0 — 2026-09-21
+## 1.2.0 — 2026-09-21
 First public release.
 
 - File-based `.bac` credentials
@@ -22,3 +22,13 @@ First public release.
 - Authorization Code + PKCE (S256)
 - OIDC discovery metadata
 - Opaque access tokens and UserInfo endpoint
+
+## 1.2.0
+
+- Added simple BAC Ticket SSO for arbitrary server-backed websites
+- Added `/login?app=...` entry point
+- Added 60-second one-use integration tickets
+- Added server-to-server `/api/integration/verify`
+- Added application secret regeneration and enable/disable controls
+- Added Cloudflare Pages integration example
+- Removed the experimental partial-OIDC endpoints from this release to avoid implying OIDC conformance

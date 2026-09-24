@@ -1,1 +1,1 @@
-import{json}from"../_lib.js";export async function onRequestGet(){return json({name:"Blade Account Card",version:"1.0.0",api:1,credential_file:2})}
+import{json}from"../_lib.js";export async function onRequestGet(){return json({name:"Blade Account Card",version:"1.2.0",api:1,credential_file:2,integration_protocol:"BAC Ticket SSO 1.0"})}

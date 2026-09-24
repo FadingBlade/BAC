@@ -1,35 +1,37 @@
-BAC v1.1.0 Integration Release Validation
-========================================
+Blade Account Card v1.2.0 Validation
+====================================
 
-PASS  functions/_lib.js
-PASS  functions/token.js
-PASS  functions/userinfo.js
-PASS  functions/authorize.js
-PASS  functions/.well-known/openid-configuration.js
-PASS  functions/api/status.js
-PASS  functions/api/health.js
-PASS  functions/api/logout.js
-PASS  functions/api/version.js
-PASS  functions/api/setup.js
-PASS  functions/api/people.js
-PASS  functions/api/applications.js
-PASS  functions/api/credentials.js
-PASS  functions/api/challenge.js
-PASS  functions/api/backup.js
-PASS  functions/api/verify.js
-PASS  functions/api/revoke.js
-PASS  functions/api/audit.js
-PASS  functions/api/oidc/complete.js
-PASS  public/assets/app.js
-PASS  No inline handlers
-PASS  Strict CSP
-PASS  Authorization endpoint
-PASS  Token endpoint
-PASS  UserInfo endpoint
-PASS  Discovery endpoint
-PASS  PKCE S256 enforcement
-PASS  One-use authorization codes
+PASS  JS syntax: functions/.well-known/bac-configuration.js
+PASS  JS syntax: functions/_lib.js
+PASS  JS syntax: functions/api/applications.js
+PASS  JS syntax: functions/api/audit.js
+PASS  JS syntax: functions/api/backup.js
+PASS  JS syntax: functions/api/challenge.js
+PASS  JS syntax: functions/api/credentials.js
+PASS  JS syntax: functions/api/health.js
+PASS  JS syntax: functions/api/integration/app.js
+PASS  JS syntax: functions/api/integration/complete.js
+PASS  JS syntax: functions/api/integration/verify.js
+PASS  JS syntax: functions/api/logout.js
+PASS  JS syntax: functions/api/people.js
+PASS  JS syntax: functions/api/revoke.js
+PASS  JS syntax: functions/api/setup.js
+PASS  JS syntax: functions/api/status.js
+PASS  JS syntax: functions/api/verify.js
+PASS  JS syntax: functions/api/version.js
+PASS  JS syntax: functions/login.js
+PASS  JS syntax: public/assets/app.js
+PASS  No inline event handlers
+PASS  Strict CSP retained
+PASS  SSO login entry point
+PASS  Ticket issuance endpoint
+PASS  Ticket verification endpoint
+PASS  60-second ticket expiration
+PASS  One-use ticket consumption
+PASS  Hashed application secrets
+PASS  Experimental OIDC discovery removed
+PASS  Integration documentation
+PASS  Cloudflare Pages example
 
-Security note: v1.1 intentionally does not issue ID tokens or advertise a JWKS URI.
-It is an OAuth Authorization Code + PKCE SSO integration preview, not a claim of full OIDC conformance.
-Live Cloudflare Pages/D1 execution cannot be performed from this offline build environment.
+Security model: App Secret remains server-side; BAC tickets are one-use and expire after 60 seconds.
+Live Cloudflare Pages/D1 execution cannot be performed from this offline artifact environment.

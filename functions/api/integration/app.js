@@ -1,0 +1,2 @@
+import{json,schema}from"../../_lib.js";
+export async function onRequestGet(c){await schema(c.env.DB);const u=new URL(c.request.url),id=u.searchParams.get("app")||"";const a=await c.env.DB.prepare("SELECT name,client_id,status FROM applications WHERE client_id=?").bind(id).first();if(!a||a.status!=="active")return json({error:"Unknown application"},404);return json({name:a.name,app_id:a.client_id})}

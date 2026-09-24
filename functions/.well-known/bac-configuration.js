@@ -1,0 +1,1 @@
+export async function onRequestGet(c){const o=new URL(c.request.url).origin;return Response.json({issuer:o,protocol:"BAC Ticket SSO",version:"1.0",login_endpoint:o+"/login",ticket_verification_endpoint:o+"/api/integration/verify",ticket_lifetime_seconds:60},{headers:{"cache-control":"public,max-age=300"}})}
