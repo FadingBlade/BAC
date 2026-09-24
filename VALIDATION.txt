@@ -1,105 +1,42 @@
-BAC v1.2.1 Cloudflare Build Fix Validation
-==========================================
+BAC v1.2.2 Frontend Fix Validation
+==================================
 
-PASS  syntax functions/.well-known/bac-configuration.js
-PASS  syntax functions/_lib.js
-PASS  syntax functions/api/applications.js
-PASS  syntax functions/api/audit.js
-PASS  syntax functions/api/backup.js
-PASS  syntax functions/api/challenge.js
-PASS  syntax functions/api/credentials.js
-PASS  syntax functions/api/health.js
-PASS  syntax functions/api/integration/app.js
-PASS  syntax functions/api/integration/complete.js
-PASS  syntax functions/api/integration/verify.js
-PASS  syntax functions/api/logout.js
-PASS  syntax functions/api/people.js
-PASS  syntax functions/api/revoke.js
-PASS  syntax functions/api/setup.js
-PASS  syntax functions/api/status.js
-PASS  syntax functions/api/verify.js
-PASS  syntax functions/api/version.js
-PASS  syntax functions/login.js
-PASS  syntax public/assets/app.js
-PASS  import schema: functions/login.js -> functions/_lib.js
-PASS  import json: functions/api/logout.js -> functions/_lib.js
-PASS  import hash: functions/api/logout.js -> functions/_lib.js
-PASS  import cookie: functions/api/logout.js -> functions/_lib.js
-PASS  import json: functions/api/backup.js -> functions/_lib.js
-PASS  import admin: functions/api/backup.js -> functions/_lib.js
-PASS  import setting: functions/api/backup.js -> functions/_lib.js
-PASS  import json: functions/api/revoke.js -> functions/_lib.js
-PASS  import body: functions/api/revoke.js -> functions/_lib.js
-PASS  import now: functions/api/revoke.js -> functions/_lib.js
-PASS  import admin: functions/api/revoke.js -> functions/_lib.js
-PASS  import log: functions/api/revoke.js -> functions/_lib.js
-PASS  import json: functions/api/version.js -> functions/_lib.js
-PASS  import json: functions/api/verify.js -> functions/_lib.js
-PASS  import body: functions/api/verify.js -> functions/_lib.js
-PASS  import unb64u: functions/api/verify.js -> functions/_lib.js
-PASS  import now: functions/api/verify.js -> functions/_lib.js
-PASS  import newSession: functions/api/verify.js -> functions/_lib.js
-PASS  import cookie: functions/api/verify.js -> functions/_lib.js
-PASS  import log: functions/api/verify.js -> functions/_lib.js
-PASS  import json: functions/api/challenge.js -> functions/_lib.js
-PASS  import body: functions/api/challenge.js -> functions/_lib.js
-PASS  import rid: functions/api/challenge.js -> functions/_lib.js
-PASS  import b64u: functions/api/challenge.js -> functions/_lib.js
-PASS  import now: functions/api/challenge.js -> functions/_lib.js
-PASS  import json: functions/api/health.js -> functions/_lib.js
-PASS  import schema: functions/api/health.js -> functions/_lib.js
-PASS  import columns: functions/api/health.js -> functions/_lib.js
-PASS  import json: functions/api/setup.js -> functions/_lib.js
-PASS  import body: functions/api/setup.js -> functions/_lib.js
-PASS  import rid: functions/api/setup.js -> functions/_lib.js
-PASS  import now: functions/api/setup.js -> functions/_lib.js
-PASS  import schema: functions/api/setup.js -> functions/_lib.js
-PASS  import setting: functions/api/setup.js -> functions/_lib.js
-PASS  import newSession: functions/api/setup.js -> functions/_lib.js
-PASS  import cookie: functions/api/setup.js -> functions/_lib.js
-PASS  import log: functions/api/setup.js -> functions/_lib.js
-PASS  import json: functions/api/audit.js -> functions/_lib.js
-PASS  import admin: functions/api/audit.js -> functions/_lib.js
-PASS  import json: functions/api/status.js -> functions/_lib.js
-PASS  import schema: functions/api/status.js -> functions/_lib.js
-PASS  import setting: functions/api/status.js -> functions/_lib.js
-PASS  import current: functions/api/status.js -> functions/_lib.js
-PASS  import json: functions/api/people.js -> functions/_lib.js
-PASS  import body: functions/api/people.js -> functions/_lib.js
-PASS  import rid: functions/api/people.js -> functions/_lib.js
-PASS  import now: functions/api/people.js -> functions/_lib.js
-PASS  import admin: functions/api/people.js -> functions/_lib.js
-PASS  import log: functions/api/people.js -> functions/_lib.js
-PASS  import json: functions/api/applications.js -> functions/_lib.js
-PASS  import body: functions/api/applications.js -> functions/_lib.js
-PASS  import rid: functions/api/applications.js -> functions/_lib.js
-PASS  import now: functions/api/applications.js -> functions/_lib.js
-PASS  import admin: functions/api/applications.js -> functions/_lib.js
-PASS  import log: functions/api/applications.js -> functions/_lib.js
-PASS  import schema: functions/api/applications.js -> functions/_lib.js
-PASS  import sha: functions/api/applications.js -> functions/_lib.js
-PASS  import json: functions/api/credentials.js -> functions/_lib.js
-PASS  import body: functions/api/credentials.js -> functions/_lib.js
-PASS  import rid: functions/api/credentials.js -> functions/_lib.js
-PASS  import now: functions/api/credentials.js -> functions/_lib.js
-PASS  import admin: functions/api/credentials.js -> functions/_lib.js
-PASS  import log: functions/api/credentials.js -> functions/_lib.js
-PASS  import schema: functions/api/credentials.js -> functions/_lib.js
-PASS  import json: functions/api/integration/app.js -> functions/_lib.js
-PASS  import schema: functions/api/integration/app.js -> functions/_lib.js
-PASS  import json: functions/api/integration/verify.js -> functions/_lib.js
-PASS  import body: functions/api/integration/verify.js -> functions/_lib.js
-PASS  import schema: functions/api/integration/verify.js -> functions/_lib.js
-PASS  import sha: functions/api/integration/verify.js -> functions/_lib.js
-PASS  import log: functions/api/integration/verify.js -> functions/_lib.js
-PASS  import json: functions/api/integration/complete.js -> functions/_lib.js
-PASS  import body: functions/api/integration/complete.js -> functions/_lib.js
-PASS  import current: functions/api/integration/complete.js -> functions/_lib.js
-PASS  import schema: functions/api/integration/complete.js -> functions/_lib.js
-PASS  import rid: functions/api/integration/complete.js -> functions/_lib.js
-PASS  import sha: functions/api/integration/complete.js -> functions/_lib.js
-PASS  import now: functions/api/integration/complete.js -> functions/_lib.js
-PASS  import log: functions/api/integration/complete.js -> functions/_lib.js
-PASS  sha() exported from functions/_lib.js
-
-This validation specifically checks the import/export mismatch that caused the Cloudflare Pages Functions build failure.
+PASS JS syntax: functions/.well-known/bac-configuration.js
+PASS JS syntax: functions/_lib.js
+PASS JS syntax: functions/api/applications.js
+PASS JS syntax: functions/api/audit.js
+PASS JS syntax: functions/api/backup.js
+PASS JS syntax: functions/api/challenge.js
+PASS JS syntax: functions/api/credentials.js
+PASS JS syntax: functions/api/health.js
+PASS JS syntax: functions/api/integration/app.js
+PASS JS syntax: functions/api/integration/complete.js
+PASS JS syntax: functions/api/integration/verify.js
+PASS JS syntax: functions/api/logout.js
+PASS JS syntax: functions/api/people.js
+PASS JS syntax: functions/api/revoke.js
+PASS JS syntax: functions/api/setup.js
+PASS JS syntax: functions/api/status.js
+PASS JS syntax: functions/api/verify.js
+PASS JS syntax: functions/api/version.js
+PASS JS syntax: functions/login.js
+PASS JS syntax: public/assets/app.js
+PASS function defined: bindUI
+PASS function defined: boot
+PASS function defined: finishBACSSO
+PASS function defined: loadApps
+PASS function defined: addApp
+PASS function defined: appAction
+PASS function defined: showAppSecret
+PASS function defined: login
+PASS function defined: logout
+PASS function defined: setup
+PASS function defined: addPerson
+PASS function defined: issue
+PASS function defined: revoke
+PASS function defined: updatePerson
+PASS function defined: exportBackup
+PASS login listener
+PASS application listener
+PASS SSO continuation startup
+PASS application action rendering

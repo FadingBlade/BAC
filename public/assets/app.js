@@ -35,6 +35,86 @@ async function exportBackup(){
 
 
 
+
+
+async function loadApps(){
+  try{
+    const x=await api("/api/applications");
+    $("#appsBody").innerHTML=(x.applications||[]).map(a=>`<tr>
+      <td>${esc(a.name)}</td>
+      <td><code>${esc(a.client_id)}</code></td>
+      <td>${esc((a.redirect_uris||[]).join(", "))}</td>
+      <td><span class="badge">${esc(a.status)}</span></td>
+      <td><button data-action="app-toggle" data-id="${esc(a.id)}" data-status="${a.status==="active"?"disabled":"active"}">${a.status==="active"?"Disable":"Enable"}</button> <button data-action="app-secret" data-id="${esc(a.id)}">New secret</button></td>
+    </tr>`).join("")||`<tr><td colspan="5" class="muted">No applications yet.</td></tr>`;
+  }catch(e){note(e.message)}
+}
+async function addApp(){
+  try{
+    const x=await api("/api/applications",{method:"POST",body:JSON.stringify({name:$("#appName").value,redirect_uri:$("#appRedirect").value})});
+    showAppSecret(x.client_id,x.app_secret,x.callback_url);
+    $("#appName").value=""; $("#appRedirect").value="";
+    await loadApps();
+  }catch(e){note(e.message)}
+}
+function showAppSecret(id,secret,callback=""){
+  const b=$("#appSecretBox"); b.classList.remove("hidden");
+  const login=`${location.origin}/login?app=${encodeURIComponent(id)}`;
+  b.innerHTML=`<strong>Save this App Secret now.</strong><br><br>App ID:<br><code>${esc(id)}</code><br><br>App Secret:<br><code>${esc(secret)}</code>${callback?`<br><br>Callback:<br><code>${esc(callback)}</code>`:""}<br><br>Login URL:<br><code>${esc(login)}</code><br><br><span class="muted">Never put the App Secret in frontend JavaScript.</span>`;
+}
+async function appAction(action,id,status){
+  try{
+    const payload={id};
+    if(action==="app-secret")payload.action="regenerate_secret";
+    if(action==="app-toggle")payload.status=status;
+    const x=await api("/api/applications",{method:"PATCH",body:JSON.stringify(payload)});
+    if(x.app_secret)showAppSecret("(same App ID)",x.app_secret);
+    await loadApps();
+  }catch(e){note(e.message)}
+}
+async function finishBACSSO(){
+  const q=new URLSearchParams(location.search);
+  if(q.get("bac_sso")!=="1"||!q.get("app"))return;
+  try{
+    const info=await fetch(`/api/integration/app?app=${encodeURIComponent(q.get("app"))}`).then(r=>r.json());
+    if(info.name)note(`Authenticated with BAC. Returning to ${info.name}…`,true);
+    const x=await api("/api/integration/complete",{method:"POST",body:JSON.stringify({app_id:q.get("app")})});
+    const u=new URL(x.callback_url);
+    u.searchParams.set("ticket",x.ticket);
+    location.replace(u.toString());
+  }catch(e){
+    if(String(e.message).toLowerCase().includes("authentication required"))return;
+    note("Application sign-in could not be completed: "+e.message);
+  }
+}
+
+function bindUI(){
+  $$(".tabs button").forEach(b=>b.addEventListener("click",()=>{
+    const id=b.dataset.tab;
+    tab(id,b);
+    if(id==="applications") loadApps();
+  }));
+
+  $("#loginBtn")?.addEventListener("click",login);
+  $("#logoutBtn")?.addEventListener("click",logout);
+  $("#setupBtn")?.addEventListener("click",setup);
+  $("#addPersonBtn")?.addEventListener("click",addPerson);
+  $("#exportBackupBtn")?.addEventListener("click",exportBackup);
+  $("#addAppBtn")?.addEventListener("click",addApp);
+
+  document.addEventListener("click",async e=>{
+    const b=e.target.closest("button[data-action]");
+    if(!b)return;
+    const action=b.dataset.action,id=b.dataset.id,role=b.dataset.role,status=b.dataset.status;
+    try{
+      if(action==="app-toggle"||action==="app-secret") await appAction(action,id,status);
+      else if(action==="issue") await issue(id);
+      else if(action==="revoke") await revoke(id);
+      else if(action==="role"||action==="status") await updatePerson(id,role,status);
+    }catch(err){note(err.message)}
+  });
+}
+
 bindUI();
 boot();
 setTimeout(finishBACSSO,350);
